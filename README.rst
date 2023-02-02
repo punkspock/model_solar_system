@@ -1,0 +1,1 @@
+Working through some problems in Computational Physics 2nd Ed (Giordano & Nakanishi, 2006).
