@@ -118,14 +118,14 @@ if __name__ == '__main__':
     sun = ax.plot(sun.pos.x, sun.pos.y, 'X', markersize=30, color='yellow')
     # ax.plot(x, y, 'g-')
     plt.grid(True, lw=0.3)  # plot grid
-    plt.savefig('earth_sun.png')
+    plt.savefig('output/earth_sun.png')
 
     def animate(i):
         earth.set_data(r[i] * np.cos(x[i]), r[i] * np.sin(y[i]))
         return earth
 
     animation = FuncAnimation(fig, animate, frames=len(x), interval=200, repeat=True)
-    animation.save('earth_sun.gif', writer='pillow')  # mp4 doesn't work
+    animation.save('output/earth_sun.gif', writer='pillow')  # mp4 doesn't work
     plt.show()
 
 
