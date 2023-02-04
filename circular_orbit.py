@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 # constants
 step = 0.002  # in yrs
-iterations = 2  # test
+iterations = 1000  # test
 earth_to_sun = 1.00  # in AU; in km it's 91.607
 pi = np.pi  # for simplicity; in radians
 
@@ -38,26 +38,27 @@ class Planet:
     def update(self):  # Euler-Cromer method
         r = self.pos.r  # for convenience
         phi = self.pos.phi
-        r_dot = self.vel.r  # r-component of polar coordinates velocity
-        print('r_dot: {}'.format(r_dot))
-        phi_dot = self.vel.phi
+        r_dot = self.vel.r  # r-component of polar coordinates velocity; actually remains 0
+        # print('r_dot: {}'.format(r_dot))  # test
+        phi_dot: float = self.vel.phi
         delta_t = self.delta_t
         factor = 4 * (pi ** 2) / (r ** 3)
-        print("Factor: {}".format(factor))  # test
+        # print("Factor: {}".format(factor))  # test
+
         # Cartesian position components
         x = r * np.cos(phi)
-        print("x: {}".format(x))  # test
+        # print("x: {}".format(x))  # test
         y = r * np.sin(phi)
-        print('y: {}'.format(y))  # test
+        # print('y: {}'.format(y))  # test
+        
         # Cartesian velocity components
         # TODO: Figure out why this line is resulting in a positive number on the first step!
         vx = (r_dot * np.cos(phi)) - (r * phi_dot * np.sin(phi))  # x component; first term cancels on first step
-        # vx = r * np.sin(phi_dot)  # don't think this test line works
-        print('first term of vx: {}'.format(r_dot * np.cos(phi)))
-        print('second term of vx: {}'.format(r * phi_dot * np.sin(phi)))
-        print('vx: {}'.format(vx))  # test
+        # print('first term of vx: {}'.format(r_dot * np.cos(phi)))  # test
+        # print('second term of vx: {}'.format(r * phi_dot * np.sin(phi)))  # test
+        # print('vx: {}'.format(vx))  # test
         vy = (r * phi_dot * np.cos(phi)) + (r_dot * np.sin(phi))  # y component; km/s
-        print('vy: {}'.format(vy))  # test
+        # print('vy: {}'.format(vy))  # test
 
         # compute updated Cartesian velocity components
         vx_new = vx - (factor * x * delta_t)
@@ -65,19 +66,14 @@ class Planet:
 
         # calculate updated Cartesian position components
         x_new = x + (vx_new * delta_t)
-        print('x_new: {}'.format(x_new))  # test
+        # print('x_new: {}'.format(x_new))  # test
         y_new = y + (vy_new * delta_t)
-        print('y_new: {}'.format(y_new))  # test
+        # print('y_new: {}'.format(y_new))  # test
 
         # update position
         self.pos.r = ((x_new ** 2) + (y_new ** 2)) ** (1 / 2)
         # self.pos.phi = phi + (phi_dot * delta_t)  # not sure about this
         self.pos.phi = np.arctan2(y_new, x_new)  # see Wikipedia page on polar coordinates
-
-        # update velocity (still circular coordinates)
-        self.vel.r = ((vx_new ** 2) + (vy_new ** 2)) ** (1 / 2)  # r_dot
-        # not updating self.vel.phi because it is constant and independent of x and y right now
-        # TODO: Check this whole method and find equations of motion
 
         return x_new, y_new
 
@@ -114,7 +110,8 @@ def main():
     # now animate
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(7, 7))  # set figure size
-    plt.axes(xlim=(-1.2, 1.2), ylim=(-1.2, 1.2))  # set axis limits with a lil margin
+    ax.set_xlim(-1.2, 1.2)
+    ax.set_ylim(-1.2, 1.2)
     earth, = ax.plot([], [], 'g.', markersize=15)
     sun = ax.plot(0, 0, 'X', markersize=30, color='yellow')
     ax.plot(xdata, ydata, 'g--')
