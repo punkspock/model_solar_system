@@ -4,7 +4,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import FuncAnimation
 from dataclasses import dataclass
 
 # constants
@@ -71,11 +71,14 @@ class Planet:
         # print('y_new: {}'.format(y_new))  # test
 
         # update position
-        self.pos.r = ((x_new ** 2) + (y_new ** 2)) ** (1 / 2)
+        self.pos.r = np.sqrt((x_new ** 2) + (y_new ** 2))
         # self.pos.phi = phi + (phi_dot * delta_t)  # not sure about this
         self.pos.phi = np.arctan2(y_new, x_new)  # see Wikipedia page on polar coordinates
 
-        return x_new, y_new
+        # I want to check something
+        speed = np.sqrt(vx_new ** 2 + vy_new ** 2)
+
+        return x_new, y_new, speed
 
 
 def main():
@@ -85,27 +88,32 @@ def main():
 
     # initialize the Earth
     earth_init_pos = Point(1.0, 0)  # remember this is in circular coordinates
-    earth_init_vel = Vector(0.0, 2 * pi)  # no radial velocity right now; only angular in rad/s
+    rad_vel = 0.0  # no radial velocity right now; only angular in rad/yr
+    phi_vel = 2.8 * pi  # chosen by trial and error
+    earth_init_vel = Vector(rad_vel, phi_vel)
     earth = Planet(earth_init_pos, earth_init_vel, step)
 
     xdata = []
     ydata = []
-    times = []
+    # speeds = []
+    # times = []
 
     t = 0  # initialize time
     for i in range(iterations):
-        x, y = earth.update()
+        x, y, speed = earth.update()
         xdata.append(x)
         ydata.append(y)
-        times.append(t)
+        # speeds.append(speed)  # test
+        # times.append(t)  # test
         t += step
 
     # test
-    plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(7, 7))
-    ax.plot(times, xdata)
-    ax.plot(times, ydata)
-    plt.show()
+    # plt.style.use('dark_background')
+    # fig, ax = plt.subplots(figsize=(7, 7))
+    # ax.plot(times, xdata)
+    # ax.plot(times, ydata)
+    # ax.plot(times, speeds)
+    # plt.show()
 
     # now animate
     plt.style.use('dark_background')
