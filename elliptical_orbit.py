@@ -5,12 +5,16 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from dataclasses import dataclass
 
+# constants and parameters
+masses = []
+iterations = 200
+delta_t = 0.002  # in yrs
+G = 6.6743e-11  # gravitational constant  # TODO: Find out if this needs to in AUs^3 solar masses^-1 yrs^-2
 
-# here it doesn't make sense to use polar coordinates in the same way as circular_orbit
 @dataclass
 class Point:
     r: float
-    phi: float
+    theta: float
 
 
 class Vector(Point):
@@ -18,32 +22,57 @@ class Vector(Point):
 
 
 class Sun:  # this is just going to go at the origin so nbd
-    def __init__(self, pos: Point, mass: float):
+    def __init__(self, pos: Point, vel: Vector, mass: float):
         self.pos = pos
+        self.vel = vel
         self.mass = mass
 
+    def add(self):
+        masses.append(self.mass)
 
-class Planet:
-    def __init__(self, pos: Point, vel: Vector, mass: float, e: float):
-        self.pos = pos  # position (in polar coordinates)
-        self.vel = vel  # velocity (in polar coordinates)
+
+class Planet:  # define planet class
+
+    def __init__(self, pos: Point, vel: Vector, mass: float):
+        self.pos = pos
+        self.vel = vel
         self.mass = mass
-        self.e = e  # eccentricity
+
+    def add(self):
+        masses.append(self.mass)
+
+    def mu(self):  # method is not static, I swear
+        mu = np.product(masses) / np.sum(masses)  # reduced mass
+
+        return mu
+
+    def to_cartesian(self):  # coordinate conversion
+        x = self.pos.r * np.cos(self.pos.theta)
+        y = self.pos.r * np.sin(self.pos.theta)
+
+        return x, y
+
+    def effective_potential(self):
+        mu = self.mu()
+        r = self.pos.r
+        V = 0.00  # dummy value; this should be a function
+
+        return V
+
+    def energy(self):  # will need this to calculate radial velocity
+        r = self.pos.r
+        r_dot = self.vel.r
+        theta_dot = self.vel.theta
+        T = 0.5 * self.mu() * ((r_dot ** 2) + (r ** 2) * (theta_dot ** 2))
+        V = self.effective_potential()
 
     def update(self):
-        r = self.pos.r
-        phi = self.pos.phi
-        r_dot = self.vel.r
-        phi_dot = self.vel.phi
-        m = self.mass
-        e = self.e
+        x, y = self.to_cartesian()
+        r = np.sqrt(x ** 2 + y ** 2)  # calculate radius
+        r_new = 0.00  # dummy value
+        theta_new = 0.00
+        self.pos.r = r_new
+        self.pos.theta = theta_new
+        x_new, y_new = self.to_cartesian()
 
-        # convert to Cartesian
-        x = r * np.cos(phi)  # x component
-        y = r * np.sin(phi)  # y component
-
-
-if __name__ == '__main__':
-    origin = Point(0, 0)
-    solar_mass = 1.00  # in solar masses
-    sun = Sun(origin, solar_mass)
+        return x_new, y_new
