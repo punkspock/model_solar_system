@@ -114,8 +114,8 @@ def main():
 
     # initialize the Earth
     earth_init_pos = Point(1.0, 0)  # remember this is in polar coordinates
-    earth_rad_vel = 1.0  # no radial velocity right now; only angular in rad/yr  # 0.0 for circular orbit
-    earth_theta_vel = 3 * pi  # chosen by trial and error
+    earth_rad_vel = 0.0  # no radial velocity right now; only angular in rad/yr  # 0.0 for circular orbit
+    earth_theta_vel = 2.8 * pi  # chosen by trial and error
     earth_init_vel = Vector(earth_rad_vel, earth_theta_vel)
     earth = Planet(earth_init_pos, earth_init_vel, earth_mass, step)
     earth.add()  # THIS MUST BE DONE
