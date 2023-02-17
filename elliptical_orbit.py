@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # time step
-iterations = 10000
+iterations = 5000
 step = 0.002  # in yr
 
 # specify constants
@@ -87,7 +87,7 @@ earth, = ax.plot([], [], 'g.', markersize=15)
 sun = ax.plot(0, 0, 'X', markersize=30, color='yellow')
 ax.plot(xdata, ydata, 'g--')
 plt.grid(True, lw=0.3)  # plot grid
-# plt.savefig('output/circular_orbit.png')
+plt.savefig('output/elliptical_orbit.png')
 
 
 def animate(i):
@@ -96,5 +96,5 @@ def animate(i):
 
 
 animation = FuncAnimation(fig, animate, frames=iterations, interval=200, repeat=True)
-# animation.save('output/circular_orbit.gif', writer='pillow')  # mp4 doesn't work
+animation.save('output/elliptical_orbit.gif', writer='pillow')  # mp4 doesn't work
 plt.show()
