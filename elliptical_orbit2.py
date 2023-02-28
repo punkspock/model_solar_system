@@ -156,7 +156,7 @@ def main():
     sun.add()
 
     # calculate angular momentum for Earth
-    earth.calc_ang_mom()
+    earth.calc_ang_mom()  # only want to do this ONCE because angular momentum is a constant
     print('Earth angular momentum at initial calculation: {}'.format(earth.ang_mom))
 
     # run the simulation
